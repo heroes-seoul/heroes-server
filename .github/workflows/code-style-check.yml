@@ -17,6 +17,9 @@ jobs:
           java-version: '17'
           cache: 'gradle'
 
+      - name: Grant execute permission for gradlew
+        run: chmod +x ./gradlew
+
       - name: Apply Spotless
         run: |
           ./gradlew spotlessApply
