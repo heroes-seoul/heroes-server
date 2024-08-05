@@ -2,5 +2,5 @@ spring:
   profiles:
     active: local
     group:
-      dev: "local"
-      prod: "prod"
+      local: "local"
+      prod: "prod, actuator"
