@@ -10,3 +10,16 @@ services:
       resources:
         limits:
           memory: 640m
+
+  nginx:
+    image: "nginx:alpine"
+    container_name: nginx
+    environment:
+      - TZ=Asia/Seoul
+    network_mode: host
+    volumes:
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    deploy:
+      resources:
+        limits:
+          memory: 128m

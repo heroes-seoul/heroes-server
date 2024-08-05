@@ -2,7 +2,7 @@ name: Deploy to Elastic Beanstalk
 
 on:
   push:
-    branches: [ "develop" ]
+    branches: [ "chore/#4-fix-eb-setting" ]
 
 env:
   DOCKERHUB_IMAGE_NAME: heroes-server
@@ -61,7 +61,7 @@ jobs:
 
       - name: Prepare deployment package
         run: |
-          zip -r deployment-package.zip docker-compose.yml
+          zip -r deployment-package.zip docker-compose.yml nginx/default.conf
 
       - name: Beanstalk Deploy
         uses: einaregilsson/beanstalk-deploy@v22
