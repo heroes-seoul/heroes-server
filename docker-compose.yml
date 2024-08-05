@@ -1,0 +1,12 @@
+services:
+  backend:
+    image: "qcov/heroes-server:latest"
+    container_name: "heroes-server"
+    restart: always
+    environment:
+      - TZ=Asia/Seoul
+    network_mode: host
+    deploy:
+      resources:
+        limits:
+          memory: 640m
