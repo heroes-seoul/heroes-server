@@ -53,7 +53,7 @@ jobs:
           file: ./Dockerfile
           push: true
           build-args: |
-            PROFILE=PROD
+            PROFILE=prod
           tags:
             ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKERHUB_IMAGE_NAME }}
 
