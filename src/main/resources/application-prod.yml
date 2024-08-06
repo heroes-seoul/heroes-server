@@ -2,3 +2,7 @@ spring:
   config:
     activate:
       on-profile: prod
+
+logging:
+  file:
+    name: /var/log/application.log
