@@ -6,6 +6,8 @@ services:
     environment:
       - TZ=Asia/Seoul
     network_mode: host
+    env_file:
+      - .env
     deploy:
       resources:
         limits:
