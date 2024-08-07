@@ -70,6 +70,9 @@ jobs:
           replace-with: '-'
           flags: 'g'
 
+      - name: Create .env file
+        run: echo "${{ secrets.ENV_FILE }}" > .env
+
       - name: Prepare deployment package
         run: |
           zip -r deployment-package.zip docker-compose.yml nginx/default.conf
