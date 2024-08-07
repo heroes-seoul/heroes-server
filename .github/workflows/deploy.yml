@@ -2,7 +2,7 @@ name: Deploy to Elastic Beanstalk
 
 on:
   push:
-    branches: [ "chore/#4-fix-eb-setting" ]
+    branches: [ "develop" ]
 
 env:
   DOCKERHUB_IMAGE_NAME: heroes-server
