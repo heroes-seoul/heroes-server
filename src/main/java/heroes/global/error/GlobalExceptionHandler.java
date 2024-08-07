@@ -18,7 +18,8 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<GlobalResponse> handleCustomException(CustomException e) {
         final ErrorCode errorCode = e.getErrorCode();
         final ErrorResponse errorResponse =
-                ErrorResponse.of(errorCode.name(), errorCode.getMessage());
+                ErrorResponse.of(
+                        errorCode.name(), errorCode.getErrorCode(), errorCode.getMessage());
         final GlobalResponse response =
                 GlobalResponse.fail(errorCode.getStatus().value(), errorResponse);
         return ResponseEntity.status(errorCode.getStatus()).body(response);

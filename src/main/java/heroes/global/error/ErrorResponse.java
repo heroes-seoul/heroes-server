@@ -7,9 +7,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ErrorResponse {
     private final String errorClassName;
+    private final String errorCode;
     private final String message;
 
-    public static ErrorResponse of(String errorClassName, String message) {
-        return new ErrorResponse(errorClassName, message);
+    public static ErrorResponse of(String errorClassName, String errorCode, String message) {
+        return new ErrorResponse(errorClassName, errorCode, message);
     }
 }

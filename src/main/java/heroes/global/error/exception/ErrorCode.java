@@ -7,8 +7,9 @@ import org.springframework.http.HttpStatus;
 @Getter
 @AllArgsConstructor
 public enum ErrorCode {
-    SAMPLE_ERROR(HttpStatus.BAD_REQUEST, "Sample Error Message");
+    SAMPLE_ERROR(HttpStatus.BAD_REQUEST, "HS4000", "Sample Error Message");
 
     private final HttpStatus status;
+    private final String errorCode;
     private final String message;
 }
