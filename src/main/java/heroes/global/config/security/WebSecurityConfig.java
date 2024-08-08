@@ -20,7 +20,12 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         defaultFilterChain(http);
-        http.authorizeHttpRequests((requests) -> requests.requestMatchers("**").permitAll());
+        http.authorizeHttpRequests(
+                (requests) ->
+                        requests.requestMatchers("**")
+                                .permitAll()
+                                .requestMatchers("/heroes-actuator/**")
+                                .permitAll());
         return http.build();
     }
 
