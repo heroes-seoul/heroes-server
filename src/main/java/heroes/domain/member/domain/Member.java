@@ -1,9 +1,14 @@
 package heroes.domain.member.domain;
 
+import static heroes.domain.member.domain.MemberRole.COMPANY;
+import static heroes.domain.member.domain.MemberRole.USER;
+import static heroes.domain.member.domain.MemberStatus.NORMAL;
+
 import heroes.domain.common.model.BaseTimeEntity;
 import heroes.domain.company.domain.Company;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -33,4 +38,44 @@ public class Member extends BaseTimeEntity {
     @OneToOne
     @JoinColumn(name = "company_id")
     private Company company;
+
+    @Builder
+    private Member(
+            String username,
+            String nickname,
+            District district,
+            OauthInfo oauthInfo,
+            MemberRole role,
+            MemberStatus status,
+            Company company) {
+        this.username = username;
+        this.nickname = nickname;
+        this.district = district;
+        this.oauthInfo = oauthInfo;
+        this.role = role;
+        this.status = status;
+        this.company = company;
+    }
+
+    public static Member createNormalMember(OauthInfo oauthInfo, String username) {
+        return Member.builder()
+                .username(username)
+                .nickname(null)
+                .district(null)
+                .role(USER)
+                .status(NORMAL)
+                .oauthInfo(oauthInfo)
+                .build();
+    }
+
+    public static Member createCompanyMember(
+            OauthInfo oauthInfo, String username, Company company) {
+        return Member.builder()
+                .username(username)
+                .role(COMPANY)
+                .status(NORMAL)
+                .oauthInfo(oauthInfo)
+                .company(company)
+                .build();
+    }
 }

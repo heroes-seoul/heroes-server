@@ -2,12 +2,12 @@ package heroes.domain.company.domain;
 
 import heroes.domain.member.domain.District;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Company {
     @Id
@@ -37,4 +37,8 @@ public class Company {
 
     private String mapUrl;
     private String mainImageUrl;
+
+    public static Company createEmptyCompany() {
+        return Company.builder().build();
+    }
 }

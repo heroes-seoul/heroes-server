@@ -4,3 +4,5 @@ spring:
     group:
       local: "local"
       prod: "prod, actuator"
+    include:
+      - security
