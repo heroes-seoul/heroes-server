@@ -3,7 +3,10 @@ package heroes.domain.auth.application;
 import static heroes.domain.member.domain.MemberRole.COMPANY;
 import static heroes.domain.member.domain.MemberRole.USER;
 
+import heroes.domain.auth.dto.AccessTokenDto;
+import heroes.domain.auth.dto.RefreshTokenDto;
 import heroes.domain.auth.dto.request.AuthCodeLoginRequest;
+import heroes.domain.auth.dto.request.TokenRefreshRequest;
 import heroes.domain.auth.dto.response.KakaoTokenLoginResponse;
 import heroes.domain.auth.dto.response.TokenPairResponse;
 import heroes.domain.company.dao.CompanyRepository;
@@ -38,6 +41,26 @@ public class AuthService {
         Member member = getMemberByOidcInfo(oidcUser, oauthInfo, request.getRole());
         jwtTokenService.setAuthenticationToken(member.getId(), member.getRole());
         return getLoginResponse(member);
+    }
+
+    public TokenPairResponse tokenRefresh(TokenRefreshRequest request) {
+        RefreshTokenDto oldRefreshTokenDto =
+                jwtTokenService.validateRefreshToken(request.getRefreshToken());
+
+        if (oldRefreshTokenDto == null) {
+            throw new CustomException(ErrorCode.EXPIRED_JWT_TOKEN);
+        }
+        RefreshTokenDto newRefreshTokenDto =
+                jwtTokenService.refreshRefreshToken(oldRefreshTokenDto);
+        AccessTokenDto accessTokenDto =
+                jwtTokenService.refreshAccessToken(getMember(newRefreshTokenDto));
+        return new TokenPairResponse(accessTokenDto.getToken(), newRefreshTokenDto.getToken());
+    }
+
+    private Member getMember(RefreshTokenDto refreshTokenDto) {
+        return memberRepository
+                .findById(refreshTokenDto.getMemberId())
+                .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
     }
 
     private TokenPairResponse getLoginResponse(Member member) {

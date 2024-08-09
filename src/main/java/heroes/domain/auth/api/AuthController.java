@@ -2,6 +2,7 @@ package heroes.domain.auth.api;
 
 import heroes.domain.auth.application.AuthService;
 import heroes.domain.auth.dto.request.AuthCodeLoginRequest;
+import heroes.domain.auth.dto.request.TokenRefreshRequest;
 import heroes.domain.auth.dto.response.TokenPairResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,5 +23,11 @@ public class AuthController {
     @PostMapping("/login")
     public TokenPairResponse memberOauthLogin(@RequestBody AuthCodeLoginRequest request) {
         return authService.socialLogin(request);
+    }
+
+    @Operation(summary = "토큰 재발급", description = "엑세스 토큰 및 리프테시 토큰을 모두 재발급합니다.")
+    @PostMapping("/refresh")
+    public TokenPairResponse refreshToken(@RequestBody TokenRefreshRequest request) {
+        return authService.tokenRefresh(request);
     }
 }
