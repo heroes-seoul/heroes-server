@@ -2,6 +2,8 @@ package heroes.global.config.security;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+import heroes.global.security.JwtAuthenticationFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -9,23 +11,28 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class WebSecurityConfig {
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         defaultFilterChain(http);
         http.authorizeHttpRequests(
-                (requests) ->
-                        requests.requestMatchers("**")
-                                .permitAll()
-                                .requestMatchers("/heroes-actuator/**")
-                                .permitAll());
+                        (requests) ->
+                                requests.requestMatchers("**")
+                                        .permitAll()
+                                        .requestMatchers("/heroes-actuator/**")
+                                        .permitAll())
+                .addFilterBefore(
+                        jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
