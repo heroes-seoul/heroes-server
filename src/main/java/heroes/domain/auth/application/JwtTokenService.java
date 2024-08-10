@@ -63,7 +63,6 @@ public class JwtTokenService {
         RefreshTokenDto refreshTokenDto =
                 jwtUtil.generateRefreshTokenDto(refreshToken.getMemberId());
         refreshToken.updateRefreshToken(refreshTokenDto.getToken());
-        refreshTokenRepository.save(refreshToken);
         return refreshTokenDto;
     }
 
