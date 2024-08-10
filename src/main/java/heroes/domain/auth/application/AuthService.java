@@ -3,6 +3,7 @@ package heroes.domain.auth.application;
 import static heroes.domain.member.domain.MemberRole.COMPANY;
 import static heroes.domain.member.domain.MemberRole.USER;
 
+import heroes.domain.auth.dao.RefreshTokenRepository;
 import heroes.domain.auth.dto.AccessTokenDto;
 import heroes.domain.auth.dto.RefreshTokenDto;
 import heroes.domain.auth.dto.request.AuthCodeLoginRequest;
@@ -16,6 +17,7 @@ import heroes.domain.member.domain.Member;
 import heroes.domain.member.domain.OauthInfo;
 import heroes.global.error.exception.CustomException;
 import heroes.global.error.exception.ErrorCode;
+import heroes.global.util.MemberUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
@@ -32,6 +34,8 @@ public class AuthService {
     private final MemberRepository memberRepository;
     private final CompanyRepository companyRepository;
     private final JwtTokenService jwtTokenService;
+    private final MemberUtil memberUtil;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     public TokenPairResponse socialLogin(AuthCodeLoginRequest request) {
         KakaoTokenLoginResponse response = kakaoService.getIdToken(request.getCode());
@@ -55,6 +59,13 @@ public class AuthService {
         AccessTokenDto accessTokenDto =
                 jwtTokenService.refreshAccessToken(getMember(newRefreshTokenDto));
         return new TokenPairResponse(accessTokenDto.getToken(), newRefreshTokenDto.getToken());
+    }
+
+    public void memberLogout() {
+        final Member currentMember = memberUtil.getCurrentMember();
+        refreshTokenRepository
+                .findById(currentMember.getId())
+                .ifPresent(refreshTokenRepository::delete);
     }
 
     private Member getMember(RefreshTokenDto refreshTokenDto) {
