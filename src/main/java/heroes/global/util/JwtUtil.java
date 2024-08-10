@@ -1,5 +1,6 @@
 package heroes.global.util;
 
+import static heroes.global.common.constants.SecurityConstants.TOKEN_PREFIX;
 import static heroes.global.common.constants.SecurityConstants.TOKEN_ROLE_NAME;
 
 import heroes.domain.auth.dto.AccessTokenDto;
@@ -11,9 +12,11 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import java.security.Key;
 import java.util.Date;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -112,6 +115,14 @@ public class JwtUtil {
                 .setSigningKey(key)
                 .build()
                 .parseClaimsJws(token);
+    }
+
+    public String extractAccessTokenFromHeader(HttpServletRequest request) {
+        String header = request.getHeader(HttpHeaders.AUTHORIZATION);
+        if (header != null && header.startsWith(TOKEN_PREFIX)) {
+            return header.replace(TOKEN_PREFIX, "");
+        }
+        return null;
     }
 
     private Key getAccessTokenKey() {
