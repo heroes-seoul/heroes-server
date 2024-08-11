@@ -5,6 +5,7 @@ oauth:
       secret: ${KAKAO_CLIENT_SECRET}
       redirectUri: ${KAKAO_CLIENT_REDIRECT_URI}
       grantType: ${KAKAO_CLIENT_GRANT_TYPE}
+      admin: ${KAKAO_CLIENT_ADMIN}
 jwt:
   access-token-secret: ${JWT_ACCESS_TOKEN}
   refresh-token-secret: ${JWT_REFRESH_TOKEN}
