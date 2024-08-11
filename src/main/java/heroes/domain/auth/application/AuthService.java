@@ -63,6 +63,17 @@ public class AuthService {
 
     public void memberLogout() {
         final Member currentMember = memberUtil.getCurrentMember();
+        deleteRefreshToken(currentMember);
+    }
+
+    public void memberWithdrawal() {
+        final Member currentMember = memberUtil.getCurrentMember();
+        kakaoService.withdrawal(Long.parseLong(currentMember.getOauthInfo().getOauthId()));
+        deleteRefreshToken(currentMember);
+        memberRepository.delete(currentMember);
+    }
+
+    private void deleteRefreshToken(Member currentMember) {
         refreshTokenRepository
                 .findById(currentMember.getId())
                 .ifPresent(refreshTokenRepository::delete);
