@@ -1,0 +1,9 @@
+spring:
+  config:
+    activate:
+      on-profile: "storage"
+storage:
+  accessKey: ${AWS_ACCESS_KEY_ID:}
+  secretKey: ${AWS_SECRET_ACCESS_KEY:}
+  bucket: ${S3_BUCKET:}
+  cloudfront: ${CLOUDFRONT_DOMAIN}

@@ -6,3 +6,4 @@ spring:
       prod: "prod, actuator"
     include:
       - security
+      - storage
