@@ -40,4 +40,8 @@ public class PresignedUrlService {
 
         return new PresignedUrlIssueResponse(url);
     }
+
+    public String getCloudfrontUrl() {
+        return storageProperties.getCloudfront();
+    }
 }
