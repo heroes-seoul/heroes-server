@@ -5,5 +5,5 @@ import lombok.Getter;
 @Getter
 public enum ImageType {
     MAIN(),
-    SUB();
+    SUB()
 }
