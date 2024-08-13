@@ -12,4 +12,5 @@ public class KakaoProperties {
     private String secret;
     private String redirectUri;
     private String grantType;
+    private String admin;
 }
