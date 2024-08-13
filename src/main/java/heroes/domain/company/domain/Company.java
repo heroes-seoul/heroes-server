@@ -7,9 +7,10 @@ import heroes.domain.member.domain.District;
 import heroes.domain.review.domain.CompanyReview;
 import heroes.domain.sublevel.domain.CompanySubLevel;
 import jakarta.persistence.*;
+import lombok.*;
+
 import java.util.ArrayList;
 import java.util.List;
-import lombok.*;
 
 @Entity
 @Getter
@@ -30,6 +31,8 @@ public class Company {
     @Enumerated(value = EnumType.STRING)
     private District district;
 
+    private CompanyType companyType;
+
     private String address;
 
     private String addressDetail;
@@ -40,7 +43,10 @@ public class Company {
     private String phoneNumber;
 
     private String mapUrl;
-    private String mainImageUrl;
+
+    @Embedded
+    private CompanyImageUrl companyImageUrl;
+
 
     @Builder.Default
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
