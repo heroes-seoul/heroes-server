@@ -6,6 +6,7 @@ import static heroes.domain.member.domain.MemberStatus.NORMAL;
 
 import heroes.domain.common.model.BaseTimeEntity;
 import heroes.domain.company.domain.Company;
+import heroes.domain.member.dto.request.MemberUpdateRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -35,6 +36,8 @@ public class Member extends BaseTimeEntity {
     @Enumerated(value = EnumType.STRING)
     private MemberRole role;
 
+    private String profileUrl;
+
     @OneToOne
     @JoinColumn(name = "company_id")
     private Company company;
@@ -47,6 +50,7 @@ public class Member extends BaseTimeEntity {
             OauthInfo oauthInfo,
             MemberRole role,
             MemberStatus status,
+            String profileUrl,
             Company company) {
         this.username = username;
         this.nickname = nickname;
@@ -54,14 +58,13 @@ public class Member extends BaseTimeEntity {
         this.oauthInfo = oauthInfo;
         this.role = role;
         this.status = status;
+        this.profileUrl = profileUrl;
         this.company = company;
     }
 
     public static Member createNormalMember(OauthInfo oauthInfo, String username) {
         return Member.builder()
                 .username(username)
-                .nickname(null)
-                .district(null)
                 .role(USER)
                 .status(NORMAL)
                 .oauthInfo(oauthInfo)
@@ -77,5 +80,11 @@ public class Member extends BaseTimeEntity {
                 .oauthInfo(oauthInfo)
                 .company(company)
                 .build();
+    }
+
+    public void updateMemberInfo(MemberUpdateRequest request, String profileUrl) {
+        this.nickname = request.getNickname();
+        this.district = request.getDistrict();
+        this.profileUrl = profileUrl;
     }
 }
