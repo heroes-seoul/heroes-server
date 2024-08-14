@@ -23,12 +23,27 @@ public class CompanyBookmarkService {
     public void createCompanyBookmark(Long companyId) {
         final Member currentMember = memberUtil.getCurrentMember();
 
-        Company company =
-                companyRepository
-                        .findById(companyId)
-                        .orElseThrow(() -> new CustomException(ErrorCode.COMPANY_NOT_FOUND));
+        Company company = findCompanyById(companyId);
         validateBookmarkExist(currentMember, company);
         bookmarkRepository.save(CompanyBookmark.create(company, currentMember));
+    }
+
+    public void deleteCompanyBookmark(Long companyId) {
+        final Member currentMember = memberUtil.getCurrentMember();
+
+        Company company = findCompanyById(companyId);
+        CompanyBookmark bookmark =
+                bookmarkRepository
+                        .findByCompanyAndMember(company, currentMember)
+                        .orElseThrow(
+                                () -> new CustomException(ErrorCode.COMPANY_BOOKMARK_NOT_FOUND));
+        bookmarkRepository.delete(bookmark.remove());
+    }
+
+    private Company findCompanyById(Long companyId) {
+        return companyRepository
+                .findById(companyId)
+                .orElseThrow(() -> new CustomException(ErrorCode.COMPANY_NOT_FOUND));
     }
 
     private void validateBookmarkExist(Member currentMember, Company company) {

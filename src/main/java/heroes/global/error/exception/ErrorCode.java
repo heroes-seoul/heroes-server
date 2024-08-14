@@ -17,6 +17,7 @@ public enum ErrorCode {
 
     MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "HS4040", "해당 회원을 찾을 수 없습니다."),
     COMPANY_NOT_FOUND(HttpStatus.NOT_FOUND, "HS4041", "해당 기업을 찾을 수 없습니다."),
+    COMPANY_BOOKMARK_NOT_FOUND(HttpStatus.NOT_FOUND, "HS4042", "해당 기업에 대한 북마크가 적용되지 않았습니다."),
 
     NICKNAME_ALREADY_EXIST(HttpStatus.CONFLICT, "HS4090", "이미 존재하는 닉네임입니다."),
     COMPANY_BOOKMARK_ALREADY_EXIST(HttpStatus.CONFLICT, "HS4091", "이미 북마크가 적용되었습니다.");
