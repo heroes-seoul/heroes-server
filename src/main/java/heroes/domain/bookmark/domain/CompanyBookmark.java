@@ -38,4 +38,10 @@ public class CompanyBookmark {
         company.getBookmarks().add(bookmark);
         return bookmark;
     }
+
+    public CompanyBookmark remove() {
+        member.getBookmarks().remove(this);
+        company.getBookmarks().remove(this);
+        return this;
+    }
 }
