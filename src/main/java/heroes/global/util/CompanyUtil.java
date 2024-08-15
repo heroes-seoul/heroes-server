@@ -16,7 +16,7 @@ public class CompanyUtil {
 
     public Company getCurrentCompany() {
         return companyRepository
-                .findById(memberUtil.getCurrentMember().getId())
+                .findById(memberUtil.getCurrentMember().getCompany().getId())
                 .orElseThrow(() -> new CustomException(ErrorCode.COMPANY_NOT_FOUND));
     }
 }
