@@ -20,7 +20,9 @@ public enum ErrorCode {
     COMPANY_BOOKMARK_NOT_FOUND(HttpStatus.NOT_FOUND, "HS4042", "해당 기업에 대한 북마크가 적용되지 않았습니다."),
 
     NICKNAME_ALREADY_EXIST(HttpStatus.CONFLICT, "HS4090", "이미 존재하는 닉네임입니다."),
-    COMPANY_BOOKMARK_ALREADY_EXIST(HttpStatus.CONFLICT, "HS4091", "이미 북마크가 적용되었습니다.");
+    COMPANY_BOOKMARK_ALREADY_EXIST(HttpStatus.CONFLICT, "HS4091", "이미 북마크가 적용되었습니다."),
+
+    INVALID_IMAGETYPE(HttpStatus.UNPROCESSABLE_ENTITY, "HS4221", "이미지 유형이 잘못되었습니다.");
 
     private final HttpStatus status;
     private final String errorCode;
