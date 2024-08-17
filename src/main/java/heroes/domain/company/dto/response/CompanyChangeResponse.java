@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CompanyCreateResponse {
+public class CompanyChangeResponse {
 
     @Schema(description = "기업 Id")
     Long companyId;

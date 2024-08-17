@@ -4,8 +4,9 @@ import heroes.domain.common.presignedurl.application.PresignedUrlService;
 import heroes.domain.common.presignedurl.dto.response.PresignedUrlIssueResponse;
 import heroes.domain.company.domain.Company;
 import heroes.domain.company.dto.request.CompanyCreateRequest;
+import heroes.domain.company.dto.request.CompanyUpdateRequest;
 import heroes.domain.company.dto.request.ImageType;
-import heroes.domain.company.dto.response.CompanyCreateResponse;
+import heroes.domain.company.dto.response.CompanyChangeResponse;
 import heroes.domain.companyhour.domain.CompanyHour;
 import heroes.domain.companyhour.domain.DayOfWeek;
 import heroes.domain.companyhour.dto.CompanyHourCreateRequest;
@@ -51,15 +52,26 @@ public class CompanyService {
     }
 
 
-    public CompanyCreateResponse updateCompany(CompanyCreateRequest request) {
+    public CompanyChangeResponse createCompany(CompanyCreateRequest request) {
         // 기업 존재 여부 확인
         Company company = companyUtil.getCurrentCompany();
 
         // 과거 기업의 정보를 수정한다.
-        company.updateCompany(request);
-        updateCompanyHours(company, request);
+        company.createCompany(request);
+        updateCompanyHours(company, request.getCompanyHourCreateRequestList());
 
-        return new CompanyCreateResponse(company.getId());
+        return new CompanyChangeResponse(company.getId());
+    }
+
+    public CompanyChangeResponse updateCompany(CompanyUpdateRequest request) {
+        // 기업 존재 여부 확인
+        Company company = companyUtil.getCurrentCompany();
+
+        // 가게 이름을 제외한 기업 정보 수정 가능
+        company.updateCompany(request);
+        updateCompanyHours(company, request.getCompanyHourCreateRequestList());
+
+        return new CompanyChangeResponse(company.getId());
     }
 
     private List<CompanyHour> buildCompanyHourList(List<CompanyHourCreateRequest> hourRequests, Company company) {
@@ -75,13 +87,14 @@ public class CompanyService {
         }
         return hours;
     }
+
     private void setCompanyHours(Company company, List<CompanyHour> newHours) {
         company.getHours().clear();
         company.getHours().addAll(newHours);
     }
 
-    private void updateCompanyHours(Company company, CompanyCreateRequest request) {
-        List<CompanyHour> newHours = buildCompanyHourList(request.getCompanyHourCreateRequestList(), company);
+    private void updateCompanyHours(Company company, List<CompanyHourCreateRequest> hourRequests) {
+        List<CompanyHour> newHours = buildCompanyHourList(hourRequests, company);
         setCompanyHours(company, newHours);
     }
 }

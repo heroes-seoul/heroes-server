@@ -3,7 +3,8 @@ package heroes.domain.company.api;
 import heroes.domain.common.presignedurl.dto.response.PresignedUrlIssueResponse;
 import heroes.domain.company.application.CompanyService;
 import heroes.domain.company.dto.request.CompanyCreateRequest;
-import heroes.domain.company.dto.response.CompanyCreateResponse;
+import heroes.domain.company.dto.request.CompanyUpdateRequest;
+import heroes.domain.company.dto.response.CompanyChangeResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +28,13 @@ public class CompanyController {
 
     @Operation(summary = "기업 신규 정보 기입", description = "기업 정보 신규로 생성합니다.")
     @PatchMapping()
-    public CompanyCreateResponse updateCompany(@RequestBody CompanyCreateRequest request) {
+    public CompanyChangeResponse createCompany(@RequestBody CompanyCreateRequest request) {
+        return companyService.createCompany(request);
+    }
+
+    @Operation(summary = "기업 정보 수정", description = "기업 정보 신규로 생성합니다.")
+    @PatchMapping("/update")
+    public CompanyChangeResponse updateCompany(@RequestBody CompanyUpdateRequest request) {
         return companyService.updateCompany(request);
     }
 }

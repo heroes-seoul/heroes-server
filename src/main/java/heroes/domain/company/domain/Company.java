@@ -3,6 +3,7 @@ package heroes.domain.company.domain;
 import heroes.domain.atmosphere.domain.CompanyAtmosphere;
 import heroes.domain.bookmark.domain.CompanyBookmark;
 import heroes.domain.company.dto.request.CompanyCreateRequest;
+import heroes.domain.company.dto.request.CompanyUpdateRequest;
 import heroes.domain.companyhour.domain.CompanyHour;
 import heroes.domain.member.domain.District;
 import heroes.domain.review.domain.CompanyReview;
@@ -72,8 +73,18 @@ public class Company {
         return Company.builder().build();
     }
 
-    public void updateCompany(CompanyCreateRequest request) {
+    public void createCompany(CompanyCreateRequest request) {
         this.companyName = request.getCompanyName();
+        this.address = request.getAddress();
+        this.addressDetail = request.getAddressDetail();
+        this.phoneNumber = request.getPhoneNumber();
+        this.companyDescription = request.getCompanyDescription();
+        this.companyUrl = request.getCompanyUrl();
+        // TODO : atmosphere, companyType enum type 변경 후 수정 예정
+        this.companyImageUrl = CompanyImageUrl.createCompanyImageUrl(request.getCompanyMainImageUrl(), request.getCompanySubImageUrlList(), request.getCompanyMenuImageUrl());
+    }
+
+    public void updateCompany(CompanyUpdateRequest request) {
         this.address = request.getAddress();
         this.addressDetail = request.getAddressDetail();
         this.phoneNumber = request.getPhoneNumber();
