@@ -1,5 +1,6 @@
 package heroes.domain.company.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,9 +12,16 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 public class CompanyImageUrl {
+    @Column(length = 1000)
     private String mainImageUrl;
+
+    @Column(length = 1000)
     private String firstSubImageUrl;
+
+    @Column(length = 1000)
     private String secondSubImageUrl;
+
+    @Column(length = 1000)
     private String menuImageUrl;
 
     @Builder
