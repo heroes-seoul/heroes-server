@@ -4,8 +4,6 @@ import heroes.domain.atmosphere.domain.CompanyAtmosphere;
 import heroes.domain.bookmark.domain.CompanyBookmark;
 import heroes.domain.company.dto.request.CompanyCreateRequest;
 import heroes.domain.companyhour.domain.CompanyHour;
-import heroes.domain.companyhour.domain.DayOfWeek;
-import heroes.domain.companyhour.dto.CompanyHourCreateRequest;
 import heroes.domain.member.domain.District;
 import heroes.domain.review.domain.CompanyReview;
 import heroes.domain.sublevel.domain.CompanySubLevel;
@@ -81,27 +79,7 @@ public class Company {
         this.phoneNumber = request.getPhoneNumber();
         this.companyDescription = request.getCompanyDescription();
         this.companyUrl = request.getCompanyUrl();
-        setCompanyHours(buildCompanyHourList(request));
         // TODO : atmosphere, companyType enum type 변경 후 수정 예정
         this.companyImageUrl = CompanyImageUrl.createCompanyImageUrl(request.getCompanyMainImageUrl(), request.getCompanySubImageUrlList(), request.getCompanyMenuImageUrl());
-    }
-
-    private void setCompanyHours(List<CompanyHour> newHours) {
-        this.hours.clear();
-        this.hours.addAll(newHours);
-    }
-
-    private List<CompanyHour> buildCompanyHourList(CompanyCreateRequest request) {
-        List<CompanyHour> hours = new ArrayList<>();
-        for (CompanyHourCreateRequest hourRequest : request.getCompanyHourCreateRequestList()) {
-            hours.add(
-                    CompanyHour.buildCompanyHour(
-                            DayOfWeek.valueOf(hourRequest.getDayOfWeek()),
-                            hourRequest.getStartTime(),
-                            hourRequest.getEndTime(),
-                            this
-                    ));
-        }
-        return hours;
     }
 }

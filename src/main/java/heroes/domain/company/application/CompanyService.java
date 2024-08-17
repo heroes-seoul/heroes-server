@@ -53,7 +53,31 @@ public class CompanyService {
 
         // 과거 기업의 정보를 수정한다.
         company.updateCompany(request);
+        updateCompanyHours(company, request);
 
         return new CompanyCreateResponse(company.getId());
+    }
+
+    private List<CompanyHour> buildCompanyHourList(List<CompanyHourCreateRequest> hourRequests, Company company) {
+        List<CompanyHour> hours = new ArrayList<>();
+        for (CompanyHourCreateRequest hourRequest : hourRequests) {
+            hours.add(
+                    CompanyHour.buildCompanyHour(
+                            DayOfWeek.valueOf(hourRequest.getDayOfWeek()),
+                            hourRequest.getStartTime(),
+                            hourRequest.getEndTime(),
+                            company
+                    ));
+        }
+        return hours;
+    }
+    private void setCompanyHours(Company company, List<CompanyHour> newHours) {
+        company.getHours().clear();
+        company.getHours().addAll(newHours);
+    }
+
+    private void updateCompanyHours(Company company, CompanyCreateRequest request) {
+        List<CompanyHour> newHours = buildCompanyHourList(request.getCompanyHourCreateRequestList(), company);
+        setCompanyHours(company, newHours);
     }
 }
