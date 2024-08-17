@@ -2,11 +2,13 @@ package heroes.domain.company.application;
 
 import heroes.domain.common.presignedurl.application.PresignedUrlService;
 import heroes.domain.common.presignedurl.dto.response.PresignedUrlIssueResponse;
-import heroes.domain.company.dao.CompanyRepository;
 import heroes.domain.company.domain.Company;
 import heroes.domain.company.dto.request.CompanyCreateRequest;
 import heroes.domain.company.dto.request.ImageType;
 import heroes.domain.company.dto.response.CompanyCreateResponse;
+import heroes.domain.companyhour.domain.CompanyHour;
+import heroes.domain.companyhour.domain.DayOfWeek;
+import heroes.domain.companyhour.dto.CompanyHourCreateRequest;
 import heroes.global.common.validations.EnumValue;
 import heroes.global.error.exception.CustomException;
 import heroes.global.error.exception.ErrorCode;
@@ -15,10 +17,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static heroes.global.common.constants.MessageConstants.INVALID_IMAGE_TYPE_MESSAGE;
 import static heroes.global.common.constants.PresignedUrlConstants.*;
 @Transactional
 @Service
@@ -28,7 +32,7 @@ public class CompanyService {
     private final CompanyUtil companyUtil;
 
     public List<PresignedUrlIssueResponse> getImageUploadUrl(
-            @EnumValue(enumClass = ImageType.class, message = "이미지 유형이 잘못되었습니다.", ignoreCase = true)
+            @EnumValue(enumClass = ImageType.class, message = INVALID_IMAGE_TYPE_MESSAGE, ignoreCase = true)
             String imageType,
             int size) {
         Company currentCompany = companyUtil.getCurrentCompany();
