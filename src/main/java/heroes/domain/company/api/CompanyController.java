@@ -7,7 +7,6 @@ import heroes.domain.company.dto.response.CompanyCreateResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -26,10 +25,9 @@ public class CompanyController {
         return companyService.getImageUploadUrl(imageType, size);
     }
 
-    @Operation(summary = "기업 신규 정보 기입", description = "기업 이미지 업로드를 위한 presigned url을 발급합니다.")
-    @PatchMapping("")
-    public ResponseEntity<CompanyCreateResponse> updateCompany(@RequestBody CompanyCreateRequest request) {
-        CompanyCreateResponse response = companyService.updateCompany(request);
-        return ResponseEntity.ok(response);
+    @Operation(summary = "기업 신규 정보 기입", description = "기업 정보 신규로 생성합니다.")
+    @PatchMapping()
+    public CompanyCreateResponse updateCompany(@RequestBody CompanyCreateRequest request) {
+        return companyService.updateCompany(request);
     }
 }
