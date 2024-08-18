@@ -33,7 +33,7 @@ public class MemberController {
 
     @Operation(summary = "일반 회원 정보 조회", description = "일반 유저 정보를 조회합니다.")
     @GetMapping("/info")
-    public MemberInfoResponse updateMemberInfo() {
+    public MemberInfoResponse getMemberInfo() {
         return memberService.getMemberInfo();
     }
 }
