@@ -8,6 +8,7 @@ import heroes.domain.common.presignedurl.dto.response.PresignedUrlIssueResponse;
 import heroes.domain.member.dao.MemberRepository;
 import heroes.domain.member.domain.Member;
 import heroes.domain.member.dto.request.MemberUpdateRequest;
+import heroes.domain.member.dto.response.MemberInfoResponse;
 import heroes.global.error.exception.CustomException;
 import heroes.global.error.exception.ErrorCode;
 import heroes.global.util.MemberUtil;
@@ -38,6 +39,14 @@ public class MemberService {
                         + MEMBER_PROFILE_DIRECTORY
                         + currentMember.getId().toString();
         currentMember.updateMemberInfo(request, profileUrl);
+    }
+
+    public MemberInfoResponse getMemberInfo() {
+        final Member currentMember = memberUtil.getCurrentMember();
+        return new MemberInfoResponse(
+                currentMember.getProfileUrl(),
+                currentMember.getNickname(),
+                currentMember.getOauthInfo().getOauthEmail());
     }
 
     private void validateNicknameExist(MemberUpdateRequest request) {

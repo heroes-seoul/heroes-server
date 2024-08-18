@@ -3,6 +3,7 @@ package heroes.domain.member.api;
 import heroes.domain.common.presignedurl.dto.response.PresignedUrlIssueResponse;
 import heroes.domain.member.application.MemberService;
 import heroes.domain.member.dto.request.MemberUpdateRequest;
+import heroes.domain.member.dto.response.MemberInfoResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -28,5 +29,11 @@ public class MemberController {
     public ResponseEntity<Void> updateMemberInfo(@RequestBody MemberUpdateRequest request) {
         memberService.updateMember(request);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+    }
+
+    @Operation(summary = "일반 회원 정보 조회", description = "일반 유저 정보를 조회합니다.")
+    @GetMapping("/info")
+    public MemberInfoResponse updateMemberInfo() {
+        return memberService.getMemberInfo();
     }
 }
