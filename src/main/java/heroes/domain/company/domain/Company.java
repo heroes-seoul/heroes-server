@@ -5,14 +5,13 @@ import heroes.domain.bookmark.domain.CompanyBookmark;
 import heroes.domain.company.dto.request.CompanyCreateRequest;
 import heroes.domain.company.dto.request.CompanyUpdateRequest;
 import heroes.domain.companyhour.domain.CompanyHour;
-import heroes.domain.member.domain.District;
 import heroes.domain.review.domain.CompanyReview;
 import heroes.domain.sublevel.domain.CompanySubLevel;
+import heroes.domain.type.domain.CompanyType;
 import jakarta.persistence.*;
-import lombok.*;
-
 import java.util.ArrayList;
 import java.util.List;
+import lombok.*;
 
 @Entity
 @Getter
@@ -30,11 +29,6 @@ public class Company {
 
     private int finalLevel;
 
-    @Enumerated(value = EnumType.STRING)
-    private District district;
-
-    private CompanyType companyType;
-
     private String address;
 
     private String addressDetail;
@@ -46,16 +40,11 @@ public class Company {
 
     private String companyUrl;
 
-    @Embedded
-    private CompanyImageUrl companyImageUrl;
+    @Embedded private CompanyImageUrl companyImageUrl;
 
     @Builder.Default
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CompanyBookmark> bookmarks = new ArrayList<>();
-
-    @Builder.Default
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CompanyAtmosphere> atmospheres = new ArrayList<>();
 
     @Builder.Default
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -69,6 +58,14 @@ public class Company {
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CompanySubLevel> subLevels = new ArrayList<>();
 
+    @Builder.Default
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CompanyType> typeList = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CompanyAtmosphere> atmosphereList = new ArrayList<>();
+
     public static Company createEmptyCompany() {
         return Company.builder().build();
     }
@@ -80,8 +77,19 @@ public class Company {
         this.phoneNumber = request.getPhoneNumber();
         this.companyDescription = request.getCompanyDescription();
         this.companyUrl = request.getCompanyUrl();
-        // TODO : atmosphere, companyType enum type 변경 후 수정 예정
-        this.companyImageUrl = CompanyImageUrl.createCompanyImageUrl(request.getCompanyMainImageUrl(), request.getCompanySubImageUrlList(), request.getCompanyMenuImageUrl());
+        this.companyImageUrl =
+                CompanyImageUrl.createCompanyImageUrl(
+                        request.getCompanyMainImageUrl(),
+                        request.getCompanySubImageUrlList(),
+                        request.getCompanyMenuImageUrl());
+
+        request.getTypeList()
+                .forEach(type -> this.typeList.add(CompanyType.createType(this, type)));
+        request.getAtmosphereNameList()
+                .forEach(
+                        atmosphere ->
+                                this.atmosphereList.add(
+                                        CompanyAtmosphere.createAtmosphere(this, atmosphere)));
     }
 
     public void updateCompany(CompanyUpdateRequest request) {
@@ -90,7 +98,21 @@ public class Company {
         this.phoneNumber = request.getPhoneNumber();
         this.companyDescription = request.getCompanyDescription();
         this.companyUrl = request.getCompanyUrl();
-        // TODO : atmosphere, companyType enum type 변경 후 수정 예정
-        this.companyImageUrl = CompanyImageUrl.createCompanyImageUrl(request.getCompanyMainImageUrl(), request.getCompanySubImageUrlList(), request.getCompanyMenuImageUrl());
+        this.companyImageUrl =
+                CompanyImageUrl.createCompanyImageUrl(
+                        request.getCompanyMainImageUrl(),
+                        request.getCompanySubImageUrlList(),
+                        request.getCompanyMenuImageUrl());
+
+        this.typeList.clear();
+        request.getTypeList()
+                .forEach(type -> this.typeList.add(CompanyType.createType(this, type)));
+
+        this.atmosphereList.clear();
+        request.getAtmosphereNameList()
+                .forEach(
+                        atmosphere ->
+                                this.atmosphereList.add(
+                                        CompanyAtmosphere.createAtmosphere(this, atmosphere)));
     }
 }

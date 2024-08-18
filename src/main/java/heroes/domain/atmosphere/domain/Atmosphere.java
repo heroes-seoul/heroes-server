@@ -1,19 +1,16 @@
 package heroes.domain.atmosphere.domain;
 
-import jakarta.persistence.*;
-import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@Entity
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Atmosphere {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "atmosphere_id")
-    private Long id;
+@AllArgsConstructor
+public enum Atmosphere {
+    NEAT("깔끔한"),
+    ENERGETIC("활기찬"),
+    FUN("재미있는"),
+    SOFT("부드러운"),
+    CALM("차분한");
 
-    @Column(length = 100)
-    private String atmosphereName;
+    private String value;
 }
