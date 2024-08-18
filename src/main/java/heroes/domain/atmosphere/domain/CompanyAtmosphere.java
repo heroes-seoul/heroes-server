@@ -2,9 +2,7 @@ package heroes.domain.atmosphere.domain;
 
 import heroes.domain.company.domain.Company;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Getter
@@ -12,14 +10,22 @@ import lombok.NoArgsConstructor;
 public class CompanyAtmosphere {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "company_atmosphere_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "company_id")
     private Company company;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "atmosphere_id")
+    @Enumerated(EnumType.STRING)
     private Atmosphere atmosphere;
+
+    @Builder
+    private CompanyAtmosphere(Company company, Atmosphere atmosphere) {
+        this.company = company;
+        this.atmosphere = atmosphere;
+    }
+
+    public static CompanyAtmosphere createAtmosphere(Company company, Atmosphere atmosphere) {
+        return CompanyAtmosphere.builder().company(company).atmosphere(atmosphere).build();
+    }
 }
