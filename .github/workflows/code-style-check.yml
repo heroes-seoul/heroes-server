@@ -27,3 +27,18 @@ jobs:
       - name: Checkstyle
         run: |
           ./gradlew spotlessCheck
+          
+      - name: Check if there are changes
+        run: |
+          git diff --exit-code || echo "Changes detected"
+
+      - name: Commit and Push changes if any
+        if: success() && steps.Check_if_there_are_changes.outputs.exitcode != 0
+        run: |
+          git config --local user.name "GitHub Action"
+          git config --local user.email "action@github.com"
+          git add .
+          git commit -m "Apply Spotless fixes"
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.HEROES_TOKEN }}
