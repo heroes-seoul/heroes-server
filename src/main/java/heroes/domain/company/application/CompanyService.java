@@ -3,25 +3,33 @@ package heroes.domain.company.application;
 import static heroes.global.common.constants.MessageConstants.INVALID_IMAGE_TYPE_MESSAGE;
 import static heroes.global.common.constants.PresignedUrlConstants.*;
 
+import heroes.domain.bookmark.dao.CompanyBookmarkRepository;
 import heroes.domain.common.presignedurl.application.PresignedUrlService;
 import heroes.domain.common.presignedurl.dto.response.PresignedUrlIssueResponse;
+import heroes.domain.company.dao.CompanyRepository;
 import heroes.domain.company.domain.Company;
 import heroes.domain.company.dto.request.CompanyCreateRequest;
 import heroes.domain.company.dto.request.CompanyUpdateRequest;
 import heroes.domain.company.dto.request.ImageType;
 import heroes.domain.company.dto.response.CompanyChangeResponse;
+import heroes.domain.company.dto.response.CompanyUnitResponse;
 import heroes.domain.companyhour.domain.CompanyHour;
 import heroes.domain.companyhour.domain.DayOfWeek;
 import heroes.domain.companyhour.dto.CompanyHourCreateRequest;
+import heroes.domain.member.domain.Member;
 import heroes.global.common.validations.EnumValue;
 import heroes.global.error.exception.CustomException;
 import heroes.global.error.exception.ErrorCode;
 import heroes.global.util.CompanyUtil;
+import heroes.global.util.MemberUtil;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +39,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class CompanyService {
     private final PresignedUrlService presignedUrlService;
     private final CompanyUtil companyUtil;
+    private final CompanyRepository companyRepository;
+    private final MemberUtil memberUtil;
+    private final CompanyBookmarkRepository companyBookmarkRepository;
 
     public List<PresignedUrlIssueResponse> getImageUploadUrl(
             @EnumValue(
@@ -110,5 +121,30 @@ public class CompanyService {
     private void updateCompanyHours(Company company, List<CompanyHourCreateRequest> hourRequests) {
         List<CompanyHour> newHours = buildCompanyHourList(hourRequests, company);
         setCompanyHours(company, newHours);
+    }
+
+    public Slice<CompanyUnitResponse> getCompanyList(Pageable pageable) {
+        // 현재 기업 찾기
+        Member member = memberUtil.getCurrentMember();
+        // 현재 기업 정보
+        List<Company> companyList = companyRepository.findAllPage(pageable);
+        List<CompanyUnitResponse> companyUnitResponseList = new ArrayList<>();
+        for (Company company : companyList) {
+            // 멤버 bookmark 확인
+            companyUnitResponseList.add(
+                    CompanyUnitResponse.ofCompanyIsBookMark(
+                            company, checkIsBookMarked(company, member)));
+        }
+
+        boolean hasNext = false;
+        if (companyList.size() > pageable.getPageSize()) {
+            companyList.remove(pageable.getPageSize());
+            hasNext = true;
+        }
+        return new SliceImpl<>(companyUnitResponseList, pageable, hasNext);
+    }
+
+    private boolean checkIsBookMarked(Company company, Member member) {
+        return companyBookmarkRepository.existsByCompanyAndMember(company, member);
     }
 }

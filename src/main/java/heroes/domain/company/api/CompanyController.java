@@ -5,10 +5,15 @@ import heroes.domain.company.application.CompanyService;
 import heroes.domain.company.dto.request.CompanyCreateRequest;
 import heroes.domain.company.dto.request.CompanyUpdateRequest;
 import heroes.domain.company.dto.response.CompanyChangeResponse;
+import heroes.domain.company.dto.response.CompanyUnitResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "기업 API", description = "기업 관련 API입니다.")
@@ -36,5 +41,12 @@ public class CompanyController {
     @PatchMapping("/update")
     public CompanyChangeResponse updateCompany(@RequestBody CompanyUpdateRequest request) {
         return companyService.updateCompany(request);
+    }
+
+    @Operation(summary = "기업 메인 화면 리스트 전달", description = "메인 화면에 필요한 리스트를 전달합니다. ")
+    @GetMapping()
+    public Slice<CompanyUnitResponse> getCompany(
+            @Parameter(description = "페이징 정보") @PageableDefault(size = 10) Pageable pageable) {
+        return companyService.getCompanyList(pageable);
     }
 }
