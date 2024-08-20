@@ -2,12 +2,11 @@ package heroes.domain.companyhour.domain;
 
 import heroes.domain.company.domain.Company;
 import jakarta.persistence.*;
+import java.time.LocalTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalTime;
 
 @Entity
 @Getter
@@ -30,18 +29,15 @@ public class CompanyHour {
 
     @Builder
     private CompanyHour(
-            DayOfWeek dayOfWeek,
-            LocalTime startTime,
-            LocalTime endTime,
-            Company company
-    ) {
+            DayOfWeek dayOfWeek, LocalTime startTime, LocalTime endTime, Company company) {
         this.dayOfWeek = dayOfWeek;
         this.startTime = startTime;
         this.endTime = endTime;
         this.company = company;
     }
 
-    public static CompanyHour buildCompanyHour(DayOfWeek dayOfWeek, LocalTime startTime, LocalTime endTime, Company company){
+    public static CompanyHour buildCompanyHour(
+            DayOfWeek dayOfWeek, LocalTime startTime, LocalTime endTime, Company company) {
         return CompanyHour.builder()
                 .dayOfWeek(dayOfWeek)
                 .startTime(startTime)
