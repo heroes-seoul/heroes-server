@@ -9,4 +9,6 @@ public final class PresignedUrlConstants {
     public static final String COMPANY_VERIFY_DIRECTORY = "sublevel/";
 
     public static final String SLASH = "/";
+
+    public static final String BUCKET_DETAIL = ".s3.ap-northeast-2.amazonaws.com";
 }

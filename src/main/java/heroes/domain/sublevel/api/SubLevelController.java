@@ -6,6 +6,7 @@ import heroes.domain.sublevel.domain.SubLevel;
 import heroes.domain.sublevel.dto.request.SubLevelUpdateRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +21,9 @@ public class SubLevelController {
 
     @Operation(summary = "양육단계 인증 url 발급", description = "양육단계 인증을 위한 presigned url을 발급합니다.")
     @GetMapping("/generate-verify-url/{subLevel}")
-    public PresignedUrlIssueResponse getUploadUrl(@RequestParam SubLevel subLevel) {
-        return subLevelService.getSubLevelImageUrl(subLevel);
+    public List<PresignedUrlIssueResponse> getUploadUrl(
+            @RequestParam int count, @PathVariable SubLevel subLevel) {
+        return subLevelService.getSubLevelImageUrl(subLevel, count);
     }
 
     @Operation(summary = "양육단계 확인 및 증가", description = "양육단계 이미지 업로드 확인 후 이미지 등록 및 양육단계 상승을 진행합니다.")
