@@ -28,8 +28,7 @@ public class CompanyUnitResponse {
     @Schema(description = "기업타입 리스트", defaultValue = "[\"CAFE\", \"RESTAURANT\"]")
     List<String> typeValueList;
 
-    @Schema(description = "분위기 리스트", defaultValue = "[]")
-    // TODO : 분위기 Enum 정해진 후 defaultValue 넣기
+    @Schema(description = "분위기 리스트", defaultValue = "[\"NEAT\", \"FUN\"]")
     List<String> atmosphereValueList;
 
     @Schema(description = "기업 이미지 리스트(메인, 서브, 메뉴, 양육인증 이미지) ")
@@ -49,8 +48,8 @@ public class CompanyUnitResponse {
                 .companyId(company.getId())
                 .finalLevel(company.getFinalLevel())
                 .companyName(company.getCompanyName())
-                .atmosphereValueList(changeComAtsToAtsVal(company.getAtmosphereList()))
-                .typeValueList(changeComTypeToTypeVal(company.getTypeList()))
+                .atmosphereValueList(changeComAtsToAts(company.getAtmosphereList()))
+                .typeValueList(changeComTypeToType(company.getTypeList()))
                 .companyImageUrlList(buildCompanyImageUrl(company.getCompanyImageUrl()))
                 .companyDescription(company.getCompanyDescription())
                 .address(company.getAddress())
@@ -77,19 +76,19 @@ public class CompanyUnitResponse {
         return urlList;
     }
 
-    private static List<String> changeComAtsToAtsVal(
+    private static List<String> changeComAtsToAts(
             List<CompanyAtmosphere> companyAtmosphereList) {
         List<String> atmosphereValueList = new ArrayList<>();
         for (CompanyAtmosphere companyAtmosphere : companyAtmosphereList) {
-            atmosphereValueList.add(companyAtmosphere.getAtmosphere().getValue());
+            atmosphereValueList.add(companyAtmosphere.getAtmosphere().toString());
         }
         return atmosphereValueList;
     }
 
-    private static List<String> changeComTypeToTypeVal(List<CompanyType> compnayTypeList) {
+    private static List<String> changeComTypeToType(List<CompanyType> companyTypeList) {
         List<String> typeValueList = new ArrayList<>();
-        for (CompanyType companyType : compnayTypeList) {
-            typeValueList.add(companyType.getType().getValue());
+        for (CompanyType companyType : companyTypeList) {
+            typeValueList.add(companyType.getType().toString());
         }
         return typeValueList;
     }
