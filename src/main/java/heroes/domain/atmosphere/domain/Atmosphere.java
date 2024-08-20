@@ -13,4 +13,5 @@ public enum Atmosphere {
     CALM("차분한");
 
     private String value;
+
 }
