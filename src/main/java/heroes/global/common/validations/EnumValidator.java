@@ -2,7 +2,6 @@ package heroes.global.common.validations;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-
 import java.util.Arrays;
 
 public class EnumValidator implements ConstraintValidator<EnumValue, String> {
@@ -21,7 +20,10 @@ public class EnumValidator implements ConstraintValidator<EnumValue, String> {
         }
 
         return Arrays.stream(enumConstants)
-                .anyMatch(enumConstant -> convertible(value, enumConstant) || convertibleIgnoreCase(value, enumConstant));
+                .anyMatch(
+                        enumConstant ->
+                                convertible(value, enumConstant)
+                                        || convertibleIgnoreCase(value, enumConstant));
     }
 
     private boolean convertibleIgnoreCase(final String value, final Enum<?> enumConstant) {

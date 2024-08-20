@@ -13,4 +13,3 @@ public class CompanyChangeResponse {
     @Schema(description = "기업 Id")
     Long companyId;
 }
-

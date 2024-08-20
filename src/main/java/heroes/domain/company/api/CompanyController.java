@@ -7,10 +7,9 @@ import heroes.domain.company.dto.request.CompanyUpdateRequest;
 import heroes.domain.company.dto.response.CompanyChangeResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @Tag(name = "기업 API", description = "기업 관련 API입니다.")
 @RestController
@@ -22,7 +21,8 @@ public class CompanyController {
 
     @Operation(summary = "기업 이미지 url 발급", description = "기업 이미지 업로드를 위한 presigned url을 발급합니다.")
     @GetMapping("/generate-url")
-    public List<PresignedUrlIssueResponse> getImageUploadUrl(@RequestParam("imageType") String imageType, @RequestParam("size")int size) {
+    public List<PresignedUrlIssueResponse> getImageUploadUrl(
+            @RequestParam("imageType") String imageType, @RequestParam("size") int size) {
         return companyService.getImageUploadUrl(imageType, size);
     }
 

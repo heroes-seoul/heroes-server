@@ -3,6 +3,7 @@ on:
   pull_request:
     branches:
       - develop
+
 jobs:
   style-test:
     runs-on: ubuntu-latest
@@ -27,3 +28,25 @@ jobs:
       - name: Checkstyle
         run: |
           ./gradlew spotlessCheck
+
+      - name: Check if there are changes
+        id: check_changes
+        run: |
+          if [ -n "$(git status --porcelain)" ]; then
+            echo "Changes detected"
+            echo "CHANGES_DETECTED=true" >> $GITHUB_ENV
+          else
+            echo "No changes"
+            echo "CHANGES_DETECTED=false" >> $GITHUB_ENV
+          fi
+
+      - name: Commit and Push changes if any
+        if: env.CHANGES_DETECTED == 'true'
+        run: |
+          git config --local user.name "GitHub Action"
+          git config --local user.email "action@github.com"
+          git add .
+          git commit -m "Apply Spotless fixes"
+          git remote set-url origin https://x-access-token:${{ secrets.HEROES_TOKEN }}@github.com/${{ github.repository }}
+          git push origin HEAD:${{ github.event.pull_request.head.ref }}
+
