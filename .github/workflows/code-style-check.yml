@@ -1,8 +1,11 @@
 name: Code Style Check
 on:
-  pull_request:
+#  pull_request:
+#    branches:
+#      - develop
+  push:
     branches:
-      - develop
+      - fix/#47-deploy-fix
 jobs:
   style-test:
     runs-on: ubuntu-latest
@@ -47,5 +50,6 @@ jobs:
           git add .
           git commit -m "Apply Spotless fixes"
           git remote set-url origin https://x-access-token:${{ secrets.HEROES_TOKEN }}@github.com/${{ github.repository }}
-          git push origin HEAD:${{ github.event.pull_request.head.ref }}
-        
+          git push origin HEAD:${{ github.ref }}
+#          git push origin HEAD:${{ github.event.pull_request.head.ref }}
+
