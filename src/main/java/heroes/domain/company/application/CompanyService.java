@@ -1,5 +1,8 @@
 package heroes.domain.company.application;
 
+import static heroes.global.common.constants.MessageConstants.INVALID_IMAGE_TYPE_MESSAGE;
+import static heroes.global.common.constants.PresignedUrlConstants.*;
+
 import heroes.domain.common.presignedurl.application.PresignedUrlService;
 import heroes.domain.common.presignedurl.dto.response.PresignedUrlIssueResponse;
 import heroes.domain.company.domain.Company;
@@ -14,17 +17,14 @@ import heroes.global.common.validations.EnumValue;
 import heroes.global.error.exception.CustomException;
 import heroes.global.error.exception.ErrorCode;
 import heroes.global.util.CompanyUtil;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import static heroes.global.common.constants.MessageConstants.INVALID_IMAGE_TYPE_MESSAGE;
-import static heroes.global.common.constants.PresignedUrlConstants.*;
 @Transactional
 @Service
 @RequiredArgsConstructor
@@ -33,24 +33,38 @@ public class CompanyService {
     private final CompanyUtil companyUtil;
 
     public List<PresignedUrlIssueResponse> getImageUploadUrl(
-            @EnumValue(enumClass = ImageType.class, message = INVALID_IMAGE_TYPE_MESSAGE, ignoreCase = true)
-            String imageType,
+            @EnumValue(
+                            enumClass = ImageType.class,
+                            message = INVALID_IMAGE_TYPE_MESSAGE,
+                            ignoreCase = true)
+                    String imageType,
             int size) {
         Company currentCompany = companyUtil.getCurrentCompany();
 
         return switch (imageType) {
-            case "MAIN" -> List.of(presignedUrlService.generatePresignedUrl(
-                    COMPANY_DIRECTORY + COMPANY_MAIN_DIRECTORY + currentCompany.getId().toString()));
+            case "MAIN" -> List.of(
+                    presignedUrlService.generatePresignedUrl(
+                            COMPANY_DIRECTORY
+                                    + COMPANY_MAIN_DIRECTORY
+                                    + currentCompany.getId().toString()));
             case "SUB" -> IntStream.range(0, size)
-                    .mapToObj(i -> presignedUrlService.generatePresignedUrl(
-                            COMPANY_DIRECTORY + COMPANY_SUB_DIRECTORY + currentCompany.getId().toString() + SLASH + i))
+                    .mapToObj(
+                            i ->
+                                    presignedUrlService.generatePresignedUrl(
+                                            COMPANY_DIRECTORY
+                                                    + COMPANY_SUB_DIRECTORY
+                                                    + currentCompany.getId().toString()
+                                                    + SLASH
+                                                    + i))
                     .collect(Collectors.toList());
-            case "MENU" -> List.of(presignedUrlService.generatePresignedUrl(
-                    COMPANY_DIRECTORY + COMPANY_MENU_DIRECTORY + currentCompany.getId().toString()));
+            case "MENU" -> List.of(
+                    presignedUrlService.generatePresignedUrl(
+                            COMPANY_DIRECTORY
+                                    + COMPANY_MENU_DIRECTORY
+                                    + currentCompany.getId().toString()));
             default -> throw new CustomException(ErrorCode.INVALID_IMAGETYPE);
         };
     }
-
 
     public CompanyChangeResponse createCompany(CompanyCreateRequest request) {
         // 기업 존재 여부 확인
@@ -74,7 +88,8 @@ public class CompanyService {
         return new CompanyChangeResponse(company.getId());
     }
 
-    private List<CompanyHour> buildCompanyHourList(List<CompanyHourCreateRequest> hourRequests, Company company) {
+    private List<CompanyHour> buildCompanyHourList(
+            List<CompanyHourCreateRequest> hourRequests, Company company) {
         List<CompanyHour> hours = new ArrayList<>();
         for (CompanyHourCreateRequest hourRequest : hourRequests) {
             hours.add(
@@ -82,8 +97,7 @@ public class CompanyService {
                             DayOfWeek.valueOf(hourRequest.getDayOfWeek()),
                             hourRequest.getStartTime(),
                             hourRequest.getEndTime(),
-                            company
-                    ));
+                            company));
         }
         return hours;
     }
