@@ -76,8 +76,7 @@ public class CompanyUnitResponse {
         return urlList;
     }
 
-    private static List<String> changeComAtsToAts(
-            List<CompanyAtmosphere> companyAtmosphereList) {
+    private static List<String> changeComAtsToAts(List<CompanyAtmosphere> companyAtmosphereList) {
         List<String> atmosphereValueList = new ArrayList<>();
         for (CompanyAtmosphere companyAtmosphere : companyAtmosphereList) {
             atmosphereValueList.add(companyAtmosphere.getAtmosphere().toString());
