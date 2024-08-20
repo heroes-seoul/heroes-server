@@ -115,4 +115,8 @@ public class Company {
                                 this.atmosphereList.add(
                                         CompanyAtmosphere.createAtmosphere(this, atmosphere)));
     }
+
+    public void updateCompanyFinalLevel(int finalLevel) {
+        this.finalLevel = finalLevel;
+    }
 }
