@@ -107,10 +107,7 @@ public class CompanyService {
                 companyRepository
                         .findById(companyId)
                         .orElseThrow(() -> new CustomException(ErrorCode.COMPANY_NOT_FOUND));
-
-        return companyRepository
-                .findCompanyDetailInfo(companyId)
-                .setCompanyData(company)
+        return new CompanyDetailResponse(company)
                 .setBookmarked(checkIsBookMarked(company, currentMember));
     }
 
