@@ -1,4 +1,4 @@
-package heroes.domain.companyhour.dto;
+package heroes.domain.companyhour.dto.request;
 
 import static heroes.global.common.constants.MessageConstants.INVALID_DAYOFWEEK_MESSAGE;
 

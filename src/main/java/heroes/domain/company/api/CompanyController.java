@@ -5,6 +5,7 @@ import heroes.domain.company.application.CompanyService;
 import heroes.domain.company.dto.request.CompanyCreateRequest;
 import heroes.domain.company.dto.request.CompanyUpdateRequest;
 import heroes.domain.company.dto.response.CompanyChangeResponse;
+import heroes.domain.company.dto.response.CompanyDetailResponse;
 import heroes.domain.company.dto.response.CompanyUnitResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -44,9 +45,15 @@ public class CompanyController {
     }
 
     @Operation(summary = "기업 메인 화면 리스트 전달", description = "메인 화면에 필요한 리스트를 전달합니다. ")
-    @GetMapping()
+    @GetMapping
     public Slice<CompanyUnitResponse> getCompany(
             @Parameter(description = "페이징 정보") @PageableDefault(size = 10) Pageable pageable) {
         return companyService.getCompanyList(pageable);
+    }
+
+    @Operation(summary = "기업 상세 정보 조회", description = "기업 상세 정보를 조회합니다.")
+    @GetMapping("/{companyId}")
+    public CompanyDetailResponse getCompanyDetailInfo(@PathVariable Long companyId) {
+        return companyService.getCompanyDetailInfo(companyId);
     }
 }

@@ -1,7 +1,7 @@
 package heroes.domain.company.dto.request;
 
 import heroes.domain.atmosphere.domain.Atmosphere;
-import heroes.domain.companyhour.dto.CompanyHourCreateRequest;
+import heroes.domain.companyhour.dto.request.CompanyHourCreateRequest;
 import heroes.domain.type.domain.Type;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
