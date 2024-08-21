@@ -12,10 +12,11 @@ import heroes.domain.company.dto.request.CompanyCreateRequest;
 import heroes.domain.company.dto.request.CompanyUpdateRequest;
 import heroes.domain.company.dto.request.ImageType;
 import heroes.domain.company.dto.response.CompanyChangeResponse;
+import heroes.domain.company.dto.response.CompanyDetailResponse;
 import heroes.domain.company.dto.response.CompanyUnitResponse;
 import heroes.domain.companyhour.domain.CompanyHour;
 import heroes.domain.companyhour.domain.DayOfWeek;
-import heroes.domain.companyhour.dto.CompanyHourCreateRequest;
+import heroes.domain.companyhour.dto.request.CompanyHourCreateRequest;
 import heroes.domain.member.domain.Member;
 import heroes.global.common.validations.EnumValue;
 import heroes.global.error.exception.CustomException;
@@ -99,6 +100,17 @@ public class CompanyService {
         return new CompanyChangeResponse(company.getId());
     }
 
+    @Transactional(readOnly = true)
+    public CompanyDetailResponse getCompanyDetailInfo(Long companyId) {
+        final Member currentMember = memberUtil.getCurrentMember();
+        Company company =
+                companyRepository
+                        .findById(companyId)
+                        .orElseThrow(() -> new CustomException(ErrorCode.COMPANY_NOT_FOUND));
+        return new CompanyDetailResponse(company)
+                .setBookmarked(checkIsBookMarked(company, currentMember));
+    }
+
     private List<CompanyHour> buildCompanyHourList(
             List<CompanyHourCreateRequest> hourRequests, Company company) {
         List<CompanyHour> hours = new ArrayList<>();
@@ -123,6 +135,7 @@ public class CompanyService {
         setCompanyHours(company, newHours);
     }
 
+    @Transactional(readOnly = true)
     public Slice<CompanyUnitResponse> getCompanyList(Pageable pageable) {
         // 현재 기업 찾기
         Member member = memberUtil.getCurrentMember();

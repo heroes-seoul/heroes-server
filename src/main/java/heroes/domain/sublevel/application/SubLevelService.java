@@ -12,6 +12,8 @@ import heroes.domain.sublevel.dto.request.SubLevelUpdateRequest;
 import heroes.global.error.exception.CustomException;
 import heroes.global.error.exception.ErrorCode;
 import heroes.global.util.CompanyUtil;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,26 +26,29 @@ public class SubLevelService {
     private final CompanyUtil companyUtil;
     private final CompanySubLevelRepository companySubLevelRepository;
 
-    public PresignedUrlIssueResponse getSubLevelImageUrl(SubLevel subLevel) {
+    public List<PresignedUrlIssueResponse> getSubLevelImageUrl(SubLevel subLevel, int count) {
         final Company currentCompany = companyUtil.getCurrentCompany();
-        return presignedUrlService.generatePresignedUrl(
-                COMPANY_VERIFY_DIRECTORY + currentCompany.getId() + SLASH + subLevel.toString());
+        return presignedUrlService.generatePresignedUrls(
+                COMPANY_VERIFY_DIRECTORY + currentCompany.getId() + SLASH + subLevel.toString(),
+                count);
     }
 
     public void updateCompanySubLevel(SubLevelUpdateRequest request) {
         final Company currentCompany = companyUtil.getCurrentCompany();
-        String imageUrl =
-                presignedUrlService.getCloudfrontUrl()
-                        + SLASH
-                        + COMPANY_VERIFY_DIRECTORY
-                        + currentCompany.getId()
-                        + SLASH
-                        + request.getSubLevel().toString();
 
         validateCompanySubLevel(request, currentCompany);
 
-        companySubLevelRepository.save(
-                CompanySubLevel.create(request.getSubLevel(), currentCompany, imageUrl));
+        List<CompanySubLevel> companySubLevels =
+                request.getUploadedImageUrlList().stream()
+                        .map(
+                                url ->
+                                        CompanySubLevel.create(
+                                                request.getSubLevel(),
+                                                currentCompany,
+                                                presignedUrlService.convertToCloudfrontUrl(url)))
+                        .collect(Collectors.toList());
+
+        companySubLevelRepository.saveAll(companySubLevels);
         currentCompany.updateCompanyFinalLevel(request.getSubLevel().getLevel());
     }
 
