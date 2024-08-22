@@ -4,11 +4,16 @@ import heroes.domain.bookmark.dao.CompanyBookmarkRepository;
 import heroes.domain.bookmark.domain.CompanyBookmark;
 import heroes.domain.company.dao.CompanyRepository;
 import heroes.domain.company.domain.Company;
+import heroes.domain.company.dto.response.CompanyUnitResponse;
 import heroes.domain.member.domain.Member;
 import heroes.global.error.exception.CustomException;
 import heroes.global.error.exception.ErrorCode;
 import heroes.global.util.MemberUtil;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +43,19 @@ public class CompanyBookmarkService {
                         .orElseThrow(
                                 () -> new CustomException(ErrorCode.COMPANY_BOOKMARK_NOT_FOUND));
         bookmarkRepository.delete(bookmark.remove());
+    }
+
+    public Slice<CompanyUnitResponse> getBookmarkedCompanyList(Long lastCompanyId, int pageSize) {
+        final Member currentMember = memberUtil.getCurrentMember();
+        Slice<Company> companySlice =
+                bookmarkRepository.findAllCompanyBookmarked(
+                        currentMember.getId(), lastCompanyId, pageSize);
+        List<CompanyUnitResponse> companyUnitResponseList =
+                companySlice.getContent().stream()
+                        .map(company -> CompanyUnitResponse.ofCompanyIsBookMark(company, true))
+                        .collect(Collectors.toList());
+        return new SliceImpl<>(
+                companyUnitResponseList, companySlice.getPageable(), companySlice.hasNext());
     }
 
     private Company findCompanyById(Long companyId) {

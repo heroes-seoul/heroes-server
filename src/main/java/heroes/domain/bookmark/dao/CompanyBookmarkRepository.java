@@ -8,7 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface CompanyBookmarkRepository extends JpaRepository<CompanyBookmark, Long> {
+public interface CompanyBookmarkRepository
+        extends JpaRepository<CompanyBookmark, Long>, CompanyBookmarkRepositoryCustom {
     boolean existsByCompanyAndMember(Company company, Member member);
 
     Optional<CompanyBookmark> findByCompanyAndMember(Company company, Member member);
