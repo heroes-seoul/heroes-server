@@ -74,7 +74,7 @@ public class CompanyService {
                             COMPANY_DIRECTORY
                                     + COMPANY_MENU_DIRECTORY
                                     + currentCompany.getId().toString()));
-            default -> throw new CustomException(ErrorCode.INVALID_IMAGETYPE);
+            default -> throw new CustomException(ErrorCode.INVALID_IMAGE_TYPE);
         };
     }
 
