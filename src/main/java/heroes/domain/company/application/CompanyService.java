@@ -3,6 +3,7 @@ package heroes.domain.company.application;
 import static heroes.global.common.constants.MessageConstants.INVALID_IMAGE_TYPE_MESSAGE;
 import static heroes.global.common.constants.PresignedUrlConstants.*;
 
+import heroes.domain.atmosphere.domain.Atmosphere;
 import heroes.domain.bookmark.dao.CompanyBookmarkRepository;
 import heroes.domain.common.presignedurl.application.PresignedUrlService;
 import heroes.domain.common.presignedurl.dto.response.PresignedUrlIssueResponse;
@@ -18,6 +19,7 @@ import heroes.domain.companyhour.domain.CompanyHour;
 import heroes.domain.companyhour.domain.DayOfWeek;
 import heroes.domain.companyhour.dto.request.CompanyHourCreateRequest;
 import heroes.domain.member.domain.Member;
+import heroes.domain.type.domain.Type;
 import heroes.global.common.validations.EnumValue;
 import heroes.global.error.exception.CustomException;
 import heroes.global.error.exception.ErrorCode;
@@ -109,6 +111,24 @@ public class CompanyService {
                         .orElseThrow(() -> new CustomException(ErrorCode.COMPANY_NOT_FOUND));
         return new CompanyDetailResponse(company)
                 .setBookmarked(checkIsBookMarked(company, currentMember));
+    }
+
+    @Transactional(readOnly = true)
+    public Slice<CompanyUnitResponse> searchCompanies(
+            String companyName,
+            Type type,
+            Atmosphere atmosphere,
+            int pageSize,
+            Long lastCompanyId) {
+        Slice<Company> companySlice =
+                companyRepository.searchCompanies(
+                        companyName, type, atmosphere, pageSize, lastCompanyId);
+        List<CompanyUnitResponse> companyUnitResponseList =
+                companySlice.getContent().stream()
+                        .map(company -> CompanyUnitResponse.ofCompanyIsBookMark(company, true))
+                        .collect(Collectors.toList());
+        return new SliceImpl<>(
+                companyUnitResponseList, companySlice.getPageable(), companySlice.hasNext());
     }
 
     private List<CompanyHour> buildCompanyHourList(

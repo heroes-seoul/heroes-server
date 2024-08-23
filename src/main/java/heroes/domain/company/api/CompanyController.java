@@ -1,5 +1,6 @@
 package heroes.domain.company.api;
 
+import heroes.domain.atmosphere.domain.Atmosphere;
 import heroes.domain.common.presignedurl.dto.response.PresignedUrlIssueResponse;
 import heroes.domain.company.application.CompanyService;
 import heroes.domain.company.dto.request.CompanyCreateRequest;
@@ -7,6 +8,7 @@ import heroes.domain.company.dto.request.CompanyUpdateRequest;
 import heroes.domain.company.dto.response.CompanyChangeResponse;
 import heroes.domain.company.dto.response.CompanyDetailResponse;
 import heroes.domain.company.dto.response.CompanyUnitResponse;
+import heroes.domain.type.domain.Type;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -55,5 +57,17 @@ public class CompanyController {
     @GetMapping("/{companyId}")
     public CompanyDetailResponse getCompanyDetailInfo(@PathVariable Long companyId) {
         return companyService.getCompanyDetailInfo(companyId);
+    }
+
+    @Operation(summary = "기업 필터링 및 검색 조회", description = "기업에 대하여 필터링 및 검색 조회합니다.")
+    @GetMapping("/search")
+    public Slice<CompanyUnitResponse> searchCompanies(
+            @RequestParam(required = false) String companyName,
+            @RequestParam(required = false) Type type,
+            @RequestParam(required = false) Atmosphere atmosphere,
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(required = false) Long lastCompanyId) {
+        return companyService.searchCompanies(
+                companyName, type, atmosphere, pageSize, lastCompanyId);
     }
 }
