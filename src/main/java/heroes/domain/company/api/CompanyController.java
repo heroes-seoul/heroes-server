@@ -11,6 +11,9 @@ import heroes.domain.company.dto.response.CompanyUnitResponse;
 import heroes.domain.type.domain.Type;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.Explode;
+import io.swagger.v3.oas.annotations.enums.ParameterStyle;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -62,12 +65,45 @@ public class CompanyController {
     @Operation(summary = "기업 필터링 및 검색 조회", description = "기업에 대하여 필터링 및 검색 조회합니다.")
     @GetMapping("/search")
     public Slice<CompanyUnitResponse> searchCompanies(
-            @RequestParam(required = false) String companyName,
-            @RequestParam(required = false) Type type,
-            @RequestParam(required = false) Atmosphere atmosphere,
-            @RequestParam(defaultValue = "10") int pageSize,
-            @RequestParam(required = false) Long lastCompanyId) {
+            @Parameter(description = "검색할 기업 명") @RequestParam(required = false) String companyName,
+            @Parameter(
+                            description = "기업 유형",
+                            schema =
+                                    @Schema(
+                                            type = "array",
+                                            allowableValues = {
+                                                "RESTAURANT",
+                                                "CAFE",
+                                                "KIDSCAFE",
+                                                "PLAYGROUND",
+                                                "ETC"
+                                            }),
+                            style = ParameterStyle.FORM,
+                            explode = Explode.TRUE)
+                    @RequestParam(required = false)
+                    List<Type> types,
+            @Parameter(
+                            description = "기업 분위기",
+                            schema =
+                                    @Schema(
+                                            type = "array",
+                                            allowableValues = {
+                                                "NEAT",
+                                                "ENERGETIC",
+                                                "FUN",
+                                                "SOFT",
+                                                "CALM"
+                                            }),
+                            style = ParameterStyle.FORM,
+                            explode = Explode.TRUE)
+                    @RequestParam(required = false)
+                    List<Atmosphere> atmospheres,
+            @Parameter(description = "지정할 페이지 내 기업 수") @RequestParam(defaultValue = "10")
+                    int pageSize,
+            @Parameter(description = "이전 페이지의 마지막 기업 ID (첫 페이지는 비워두세요.)")
+                    @RequestParam(required = false)
+                    Long lastCompanyId) {
         return companyService.searchCompanies(
-                companyName, type, atmosphere, pageSize, lastCompanyId);
+                companyName, types, atmospheres, pageSize, lastCompanyId);
     }
 }

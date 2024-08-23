@@ -4,6 +4,7 @@ import static heroes.domain.atmosphere.domain.QCompanyAtmosphere.companyAtmosphe
 import static heroes.domain.type.domain.QCompanyType.companyType;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import heroes.domain.atmosphere.domain.Atmosphere;
 import heroes.domain.company.domain.Company;
@@ -39,8 +40,8 @@ public class CompanyRepositoryCustomImpl implements CompanyRepositoryCustom {
     @Override
     public Slice<Company> searchCompanies(
             String companyName,
-            Type type,
-            Atmosphere atmosphere,
+            List<Type> types,
+            List<Atmosphere> atmospheres,
             int pageSize,
             Long lastCompanyId) {
         List<Company> results =
@@ -50,8 +51,8 @@ public class CompanyRepositoryCustomImpl implements CompanyRepositoryCustom {
                         .leftJoin(company.atmosphereList, companyAtmosphere)
                         .where(
                                 companyNameLike(companyName),
-                                hasCompanyType(type),
-                                hasCompanyAtmosphere(atmosphere),
+                                hasAllCompanyTypes(types),
+                                hasAllCompanyAtmospheres(atmospheres),
                                 lastCompanyId(lastCompanyId))
                         .orderBy(company.id.desc())
                         .limit(pageSize + 1)
@@ -71,18 +72,32 @@ public class CompanyRepositoryCustomImpl implements CompanyRepositoryCustom {
         return company.companyName.like("%" + companyName + "%");
     }
 
-    private BooleanExpression hasCompanyType(Type type) {
-        if (type == null) {
+    private BooleanExpression hasAllCompanyTypes(List<Type> types) {
+        if (types == null || types.isEmpty()) {
             return null;
         }
-        return companyType.type.eq(type);
+
+        return JPAExpressions.selectFrom(companyType)
+                .where(companyType.company.eq(company).and(companyType.type.in(types)))
+                .groupBy(companyType.company)
+                .having(companyType.count().eq((long) types.size()))
+                .exists();
     }
 
-    private BooleanExpression hasCompanyAtmosphere(Atmosphere atmosphere) {
-        if (atmosphere == null) {
+    private BooleanExpression hasAllCompanyAtmospheres(List<Atmosphere> atmospheres) {
+        if (atmospheres == null || atmospheres.isEmpty()) {
             return null;
         }
-        return companyAtmosphere.atmosphere.eq(atmosphere);
+
+        return JPAExpressions.selectFrom(companyAtmosphere)
+                .where(
+                        companyAtmosphere
+                                .company
+                                .eq(company)
+                                .and(companyAtmosphere.atmosphere.in(atmospheres)))
+                .groupBy(companyAtmosphere.company)
+                .having(companyAtmosphere.count().eq((long) atmospheres.size()))
+                .exists();
     }
 
     private BooleanExpression lastCompanyId(Long lastCompanyId) {

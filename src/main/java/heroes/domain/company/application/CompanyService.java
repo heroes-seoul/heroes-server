@@ -116,13 +116,13 @@ public class CompanyService {
     @Transactional(readOnly = true)
     public Slice<CompanyUnitResponse> searchCompanies(
             String companyName,
-            Type type,
-            Atmosphere atmosphere,
+            List<Type> types,
+            List<Atmosphere> atmospheres,
             int pageSize,
             Long lastCompanyId) {
         Slice<Company> companySlice =
                 companyRepository.searchCompanies(
-                        companyName, type, atmosphere, pageSize, lastCompanyId);
+                        companyName, types, atmospheres, pageSize, lastCompanyId);
         List<CompanyUnitResponse> companyUnitResponseList =
                 companySlice.getContent().stream()
                         .map(company -> CompanyUnitResponse.ofCompanyIsBookMark(company, true))

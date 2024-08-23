@@ -12,5 +12,9 @@ public interface CompanyRepositoryCustom {
     List<Company> findAllPage(Pageable pageable);
 
     Slice<Company> searchCompanies(
-            String companyName, Type type, Atmosphere atmosphere, int pageSize, Long lastCompanyId);
+            String companyName,
+            List<Type> types,
+            List<Atmosphere> atmospheres,
+            int pageSize,
+            Long lastCompanyId);
 }
