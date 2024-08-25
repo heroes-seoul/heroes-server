@@ -10,7 +10,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class KakaoProperties {
     private String id;
     private String secret;
-    private String redirectUri;
+    private String normalRedirectUri;
+    private String companyRedirectUri;
     private String grantType;
     private String admin;
 }

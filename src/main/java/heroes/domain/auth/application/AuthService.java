@@ -6,7 +6,6 @@ import static heroes.domain.member.domain.MemberRole.USER;
 import heroes.domain.auth.dao.RefreshTokenRepository;
 import heroes.domain.auth.dto.AccessTokenDto;
 import heroes.domain.auth.dto.RefreshTokenDto;
-import heroes.domain.auth.dto.request.AuthCodeLoginRequest;
 import heroes.domain.auth.dto.request.TokenRefreshRequest;
 import heroes.domain.auth.dto.response.KakaoTokenLoginResponse;
 import heroes.domain.auth.dto.response.TokenPairResponse;
@@ -14,6 +13,7 @@ import heroes.domain.company.dao.CompanyRepository;
 import heroes.domain.company.domain.Company;
 import heroes.domain.member.dao.MemberRepository;
 import heroes.domain.member.domain.Member;
+import heroes.domain.member.domain.MemberRole;
 import heroes.domain.member.domain.OauthInfo;
 import heroes.global.error.exception.CustomException;
 import heroes.global.error.exception.ErrorCode;
@@ -37,12 +37,22 @@ public class AuthService {
     private final MemberUtil memberUtil;
     private final RefreshTokenRepository refreshTokenRepository;
 
-    public TokenPairResponse socialLogin(AuthCodeLoginRequest request) {
-        KakaoTokenLoginResponse response = kakaoService.getIdToken(request.getCode());
+    public TokenPairResponse socialNormalLogin(String code) {
+        KakaoTokenLoginResponse response = kakaoService.getNormalUserIdToken(code);
         OidcUser oidcUser = idTokenVerifier.getOidcUser(response.getId_token());
         OauthInfo oauthInfo = OauthInfo.from(oidcUser);
 
-        Member member = getMemberByOidcInfo(oidcUser, oauthInfo, request.getRole());
+        Member member = getMemberByOidcInfo(oidcUser, oauthInfo, USER);
+        jwtTokenService.setAuthenticationToken(member.getId(), member.getRole());
+        return getLoginResponse(member);
+    }
+
+    public TokenPairResponse socialCompanyLogin(String code) {
+        KakaoTokenLoginResponse response = kakaoService.getCompanyUserIdToken(code);
+        OidcUser oidcUser = idTokenVerifier.getOidcUser(response.getId_token());
+        OauthInfo oauthInfo = OauthInfo.from(oidcUser);
+
+        Member member = getMemberByOidcInfo(oidcUser, oauthInfo, COMPANY);
         jwtTokenService.setAuthenticationToken(member.getId(), member.getRole());
         return getLoginResponse(member);
     }
@@ -91,7 +101,7 @@ public class AuthService {
         return new TokenPairResponse(accessToken, refreshToken);
     }
 
-    private Member getMemberByOidcInfo(OidcUser oidcUser, OauthInfo oauthInfo, String role) {
+    private Member getMemberByOidcInfo(OidcUser oidcUser, OauthInfo oauthInfo, MemberRole role) {
         return memberRepository
                 .findByOauthInfo(oauthInfo)
                 .orElseGet(() -> saveMember(oauthInfo, getUserSocialName(oidcUser), role));
@@ -101,11 +111,11 @@ public class AuthService {
         return oidcUser.getClaim("nickname");
     }
 
-    private Member saveMember(OauthInfo oauthInfo, String username, String role) {
-        if (role != null && role.equals(COMPANY.toString())) {
+    private Member saveMember(OauthInfo oauthInfo, String username, MemberRole role) {
+        if (role != null && role.equals(COMPANY)) {
             Company company = companyRepository.save(Company.createEmptyCompany());
             return memberRepository.save(Member.createCompanyMember(oauthInfo, username, company));
-        } else if (role != null && role.equals(USER.toString())) {
+        } else if (role != null && role.equals(USER)) {
             return memberRepository.save(Member.createNormalMember(oauthInfo, username));
         }
         throw new CustomException(ErrorCode.NOT_EXISTED_ROLE);
