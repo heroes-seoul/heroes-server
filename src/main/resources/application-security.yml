@@ -3,7 +3,8 @@ oauth:
     client:
       id: ${KAKAO_CLIENT_ID}
       secret: ${KAKAO_CLIENT_SECRET}
-      redirectUri: ${KAKAO_CLIENT_REDIRECT_URI}
+      normalRedirectUri: ${KAKAO_CLIENT_REDIRECT_URI_NORMAL}
+      companyRedirectUri: ${KAKAO_CLIENT_REDIRECT_URI_COMPANY}
       grantType: ${KAKAO_CLIENT_GRANT_TYPE}
       admin: ${KAKAO_CLIENT_ADMIN}
 jwt:
