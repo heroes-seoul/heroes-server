@@ -1,8 +1,7 @@
 package heroes.domain.auth.api;
 
-import static heroes.global.common.constants.SecurityConstants.REDIRECT_LOGIN_CODE;
-
 import heroes.domain.auth.application.AuthService;
+import heroes.domain.auth.dto.request.AuthCodeLoginRequest;
 import heroes.domain.auth.dto.request.TokenRefreshRequest;
 import heroes.domain.auth.dto.response.TokenPairResponse;
 import io.swagger.v3.oas.annotations.Operation;
@@ -18,18 +17,10 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private final AuthService authService;
 
-    @Operation(summary = "일반 유저 회원가입 및 로그인", description = "일반 유저의 회원가입 및 로그인을 진행합니다.")
-    @GetMapping("/login/normal")
-    public TokenPairResponse normalMemberOauthLogin(
-            @RequestParam(REDIRECT_LOGIN_CODE) String code) {
-        return authService.socialNormalLogin(code);
-    }
-
-    @Operation(summary = "기업 유저 회원가입 및 로그인", description = "기업 유저의 회원가입 및 로그인을 진행합니다.")
-    @GetMapping("/login/company")
-    public TokenPairResponse companyMemberOauthLogin(
-            @RequestParam(REDIRECT_LOGIN_CODE) String code) {
-        return authService.socialCompanyLogin(code);
+    @Operation(summary = "회원가입 및 로그인", description = "회원가입 및 로그인을 진행합니다.")
+    @PostMapping("/login")
+    public TokenPairResponse memberOauthLogin(@RequestBody AuthCodeLoginRequest request) {
+        return authService.socialLogin(request);
     }
 
     @Operation(summary = "토큰 재발급", description = "엑세스 토큰 및 리프테시 토큰을 모두 재발급합니다.")
