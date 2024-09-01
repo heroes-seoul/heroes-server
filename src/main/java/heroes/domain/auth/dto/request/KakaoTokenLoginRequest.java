@@ -18,23 +18,12 @@ public class KakaoTokenLoginRequest {
     private String clientSecret;
     private String grantType;
 
-    public static KakaoTokenLoginRequest newNormalRequest(KakaoProperties properties, String code) {
+    public static KakaoTokenLoginRequest newInstance(KakaoProperties properties, String code) {
         return KakaoTokenLoginRequest.builder()
                 .code(code)
                 .clientId(properties.getId())
                 .clientSecret(properties.getSecret())
-                .redirectUri(properties.getNormalRedirectUri())
-                .grantType(properties.getGrantType())
-                .build();
-    }
-
-    public static KakaoTokenLoginRequest newCompanyRequest(
-            KakaoProperties properties, String code) {
-        return KakaoTokenLoginRequest.builder()
-                .code(code)
-                .clientId(properties.getId())
-                .clientSecret(properties.getSecret())
-                .redirectUri(properties.getCompanyRedirectUri())
+                .redirectUri(properties.getRedirectUri())
                 .grantType(properties.getGrantType())
                 .build();
     }

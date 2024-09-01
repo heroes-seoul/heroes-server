@@ -6,7 +6,6 @@ public final class SecurityConstants {
 
     public static final String KAKAO_LOGIN_URL = "https://kauth.kakao.com";
     public static final String KAKAO_LOGIN_ENDPOINT = "/oauth/token";
-    public static final String REDIRECT_LOGIN_CODE = "code";
 
     public static final String KAKAO_WITHDRAWAL_URL = "https://kapi.kakao.com";
     public static final String KAKAO_WITHDRAWAL_ENDPOINT = "/v1/user/unlink";
